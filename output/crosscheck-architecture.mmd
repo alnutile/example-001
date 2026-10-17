@@ -1,0 +1,19 @@
+flowchart TB
+    subgraph Preparation[Corpus preparation]
+      W[WikipediaLoader: one string per query] --> C[Deduplicated JSON snapshot + content hash]
+      C --> E[1000-character passages / 150 overlap + DatabricksEmbeddings]
+      E --> F[(FAISS index + source metadata)]
+    end
+    subgraph Application[LangGraph application]
+      I[User assertion paragraph] --> X[ClaimExtractor: author's prompt]
+      X --> R[Two dense queries / rank fusion / 4 passages]
+      R --> V[Verifier: author's prompt + Python quote checks]
+      V -->|sufficient or no useful new query| M[Quality metrics]
+      V -->|insufficient + new query| T[One retry: search + append 2 passages + reverify]
+      T --> M
+      M --> O[Deterministic cited report]
+    end
+    F -.-> R
+    F -.-> T
+    G[Hand-labelled diagnostic claims] -. bypass extraction .-> R
+    O -. evaluation run only .-> A[Accuracy / per-class accuracy / citation coverage / abstentions / errors]

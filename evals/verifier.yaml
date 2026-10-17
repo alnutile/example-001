@@ -1,0 +1,22 @@
+description: CrossCheck verifier
+prompts: []
+providers:
+  - id: openai:chat:databricks-meta-llama-3-1-8b-instruct
+    label: llama-3.1-8b
+    config:
+      apiBaseUrl: https://dbc-2c461ecc-4f35.cloud.databricks.com/serving-endpoints
+      apiKeyEnvar: DATABRICKS_TOKEN
+      temperature: 0
+      max_tokens: 2000
+defaultTest:
+  options:
+    provider:
+      id: openai:chat:databricks-meta-llama-3-3-70b-instruct
+      config:
+        apiBaseUrl: https://dbc-2c461ecc-4f35.cloud.databricks.com/serving-endpoints
+        apiKeyEnvar: DATABRICKS_TOKEN
+        temperature: 0
+  assert:
+    - type: python
+      value: file://assert_verifier.py
+tests: file://verifier_tests.json

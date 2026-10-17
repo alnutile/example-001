@@ -1,0 +1,24 @@
+description: CrossCheck extractor
+prompts: []
+providers:
+  - id: openai:chat:databricks-meta-llama-3-1-8b-instruct
+    label: llama-3.1-8b
+    config:
+      apiBaseUrl: https://dbc-2c461ecc-4f35.cloud.databricks.com/serving-endpoints
+      apiKeyEnvar: DATABRICKS_TOKEN
+      temperature: 0
+      max_tokens: 1500
+defaultTest:
+  options:
+    provider:
+      id: openai:chat:databricks-meta-llama-3-3-70b-instruct
+      config:
+        apiBaseUrl: https://dbc-2c461ecc-4f35.cloud.databricks.com/serving-endpoints
+        apiKeyEnvar: DATABRICKS_TOKEN
+        temperature: 0
+  assert:
+    - type: python
+      value: file://assert_extractor.py
+    - type: llm-rubric
+      value: "The output is JSON with a claims list. Compare to these reference atomic claims: {{expected_claims}}. Do NOT judge whether claims are historically true; false claims written by the user must be kept. Pass if every extracted claim is a single checkable factual assertion stated or directly implied by the input text '{{input_text}}', no new facts are added, opinions/questions/instructions are excluded, and the reference facts are covered (wording may differ; splitting slightly differently is fine)."
+tests: file://extractor_tests.json

@@ -1,0 +1,1 @@
+Extract the factual claims from input_text as a list of short atomic claims, each with a search_query for Wikipedia. Return at most max_claims claims as JSON matching output_schema.

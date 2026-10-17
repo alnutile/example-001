@@ -11,6 +11,13 @@ def load_corpus(query_terms, max_docs=40, per_query=5, chars_per_article=6000,
     from langchain_community.document_loaders import WikipediaLoader
     from langchain_core.documents import Document
 
+    # Wikipedia returns 403 to requests without a descriptive User-Agent.
+    try:
+        import wikipedia
+        wikipedia.set_user_agent("CrossCheck/0.1 (alfrednutile@gmail.com)")
+    except ImportError:  # offline tests stub the loader and skip the package
+        pass
+
     if not query_terms or any(not isinstance(q, str) or not q.strip() for q in query_terms):
         raise ValueError("query_terms must contain nonempty strings.")
     if max_docs < 1 or per_query < 1:

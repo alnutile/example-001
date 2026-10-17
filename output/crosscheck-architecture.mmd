@@ -5,9 +5,9 @@ flowchart TB
       E --> F[(FAISS index + source metadata)]
     end
     subgraph Application[LangGraph application]
-      I[User assertion paragraph] --> X[ClaimExtractor: author's prompt]
+      I[User assertion paragraph] --> X[ClaimExtractor: AUTHOR_PROMPTS extractor]
       X --> R[Two dense queries / rank fusion / 4 passages]
-      R --> V[Verifier: author's prompt + Python quote checks]
+      R --> V[Verifier: AUTHOR_PROMPTS verifier + Python quote checks]
       V -->|sufficient or no useful new query| M[Quality metrics]
       V -->|insufficient + new query| T[One retry: search + append 2 passages + reverify]
       T --> M
@@ -17,3 +17,10 @@ flowchart TB
     F -.-> T
     G[Hand-labelled diagnostic claims] -. bypass extraction .-> R
     O -. evaluation run only .-> A[Accuracy / per-class accuracy / citation coverage / abstentions / errors]
+    subgraph PromptLoop[Prompt engineering loop - offline, promptfoo]
+      P1[Business goal + labelled evals: 30 verifier claims, 8 extractor paragraphs] --> P2[5 scored tuning rounds on databricks-meta-llama-3-1-8b-instruct]
+      P2 --> P3[Final verifier 26/30, extractor 8/8]
+    end
+    P3 -. AUTHOR_PROMPTS .-> X
+    P3 -. AUTHOR_PROMPTS .-> V
+    A -.-> L[Live golden-set run on Databricks Free Edition serverless: 6/6 correct, citation coverage 100%, databricks-bge-large-en embeddings]

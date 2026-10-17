@@ -28,7 +28,7 @@ not a completed or executed submission.
 ## Files
 
 - `01_agentic_wikipedia_aimpoint_interview.ipynb`: primary importable notebook.
-- `output/pdf/crosscheck-architecture.pdf`: one-page reference architecture draft.
+- `output/pdf/crosscheck-architecture.pdf`: one-page reference architecture (rendered by `scripts/build_architecture.py`).
 - `output/crosscheck-architecture.png`: image version of the architecture.
 - `output/crosscheck-architecture.mmd`: editable Mermaid diagram.
 - `crosscheck/workflow.py`: editable workflow implementation, embedded in the notebook.
